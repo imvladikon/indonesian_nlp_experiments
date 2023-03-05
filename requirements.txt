@@ -1,7 +1,5 @@
 datasets
 transformers
-spacy
-spacy-udpipe
 textract
 pdfplumber
 sentencepiece
