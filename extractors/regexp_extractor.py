@@ -121,10 +121,12 @@ class RegexpExtractor(BaseExtractor):
             priority (int): Priority of entity type
         """
         if entity_type == 'person':
-            return 3
+            return 4
         elif entity_type == 'location':
-            return 2
+            return 3
         elif entity_type == 'date':
+            return 2
+        elif entity_type == 'social_media':
             return 1
         else:
             return 0
@@ -170,6 +172,50 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
                 r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})',
                 r"https?:[a-zA-Z0-9_.+-/#~]+ ",
             ],
+            "passport": [
+                r"([a-zA-Z]{2})\d{8}",
+                r"([a-zA-Z]{2})\d{7}"
+            ],
+            "crypto_wallet": [
+                # ETH
+                r"0x[a-fA-F0-9]{40}",
+                r"0x[a-fA-F0-9]{42}",
+                r"0x[a-fA-F0-9]{64}",
+                # BTC
+                r"1[a-km-zA-HJ-NP-Z1-9]{25,34}",
+            ],
+            "imei": [
+                r"\d{15}",
+            ],
+            "credit_card": [
+                r"\d{4} \d{4} \d{4} \d{4}",
+                r"\d{4}-\d{4}-\d{4}-\d{4}",
+            ],
+            "mac_address": [
+                r"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})",
+            ],
+            "geo_coordinate": [
+                r"[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)",
+            ],
+            "ip_address": [
+                r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
+            ],
+            "social_media": [
+                r"twitter.com\/[a-zA-Z0-9_]+",
+                r"facebook.com\/[a-zA-Z0-9_]+",
+                r"instagram.com\/[a-zA-Z0-9_]+",
+                r"linkedin.com\/[a-zA-Z0-9_]+",
+                r"t.me\/[a-zA-Z0-9_]+",
+                r"youtube.com\/[a-zA-Z0-9_]+",
+                r"pinterest.com\/[a-zA-Z0-9_]+",
+                r"reddit.com\/[a-zA-Z0-9_]+",
+                r"tiktok.com\/[a-zA-Z0-9_]+",
+                r"twitch.tv\/[a-zA-Z0-9_]+",
+                r"whatsapp.com\/[a-zA-Z0-9_]+",
+                r"telegram.me\/[a-zA-Z0-9_]+",
+                r"telegram.org\/[a-zA-Z0-9_]+",
+                r"telegram.com\/[a-zA-Z0-9_]+",
+            ]
 
         }
         super().__init__(patterns=patterns, **kwargs)
