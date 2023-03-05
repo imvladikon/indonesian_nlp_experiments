@@ -6,17 +6,27 @@ from extractors.base_extractor import BaseExtractor
 
 
 class MentionExtractor(BaseExtractor):
-    def __init__(self,
-                 model_name: str = "cahya/xlm-roberta-large-indonesian-NER",
-                 aggregation_strategy: str = "max",
-                 **kwargs):
+
+    def __init__(
+        self,
+        model_name: str = "cahya/xlm-roberta-large-indonesian-NER",
+        aggregation_strategy: str = "max",
+        **kwargs
+    ):
         super().__init__(**kwargs)
         model = AutoModelForTokenClassification.from_pretrained(model_name)
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.pipeline = NerPipeline(model=model, tokenizer=tokenizer, aggregation_strategy=aggregation_strategy)
+        self.pipeline = NerPipeline(
+            model=model, tokenizer=tokenizer, aggregation_strategy=aggregation_strategy
+        )
 
-    def _extract(self, **kwargs):
-        return self.pipeline(**kwargs)
+    def _extract(self, *args, **kwargs):
+        text = args[0]
+        mentions = self.pipeline(*args, **kwargs)
+        # fix the word
+        for mention in mentions:
+            mention["word"] = text[mention["start"] : mention["end"]]
+        return mentions
 
 
 if __name__ == '__main__':
