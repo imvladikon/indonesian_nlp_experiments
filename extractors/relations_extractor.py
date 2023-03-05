@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import Dict, Optional
+
 from extractors.base_extractor import BaseExtractor
 from extractors.mentions_extractor import MentionExtractor
 from extractors.qa_extractor import QAExtractor
@@ -9,30 +11,41 @@ class RelationsExtractor(BaseExtractor):
     """
     Extracts relations between entities from text
     based on QA patterns and dictionary of relations
-    using dictionary-trie data structure
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, relations_patterns: Optional[Dict] = None, **kwargs):
         super().__init__(**kwargs)
         self._dictionary = kwargs.get("dictionary", {})
         self._mentions_extractor = None
         self._qa_extractor = None
         # list of patterns for relations between entities with QA prompts
         # patterns are symmetric
-        self.relations_patterns = {
-            ("PER", "PER"): [
-                "Is {subject} an associate of {object}?",
-                "Is {subject} a coworker of {object}?",
-                "Did {subject} and {object} cooperate?"
-            ],
-            ("PER", "LOC"): [
-                "Is {subject} from {object}?",
-                "Is {subject} a citizen of {object}?",
-                "Is {subject} a resident of {object}?"],
-            ("PER", "ORG"): [
-                "Is {subject} a member of {object}?",
-            ],
-        }
+        if relations_patterns:
+            self.relations_patterns = relations_patterns
+        else:
+            self.relations_patterns = {
+                ("PER", "PER"): [
+                    # "Is {subject} an associate of {object}?",
+                    "Apakah {subject} adalah {object}?",
+                    # "Is {subject} a coworker of {object}?",
+                    "Apakah {subject} adalah rekan kerja {object}?",
+                    # "Did {subject} and {object} cooperate?"
+                    "Apakah {subject} dan {object} bekerja sama?",
+                ],
+                ("PER", "LOC"): [
+                    # "Is {subject} from {object}?",
+                    "Apakah {subject} berasal dari {object}?",
+                    # "Is {subject} a citizen of {object}?",
+                    "Apakah {subject} adalah warga negara {object}?",
+                    # "Is {subject} a resident of {object}?"
+                    "Apakah {subject} adalah penduduk {object}?",
+                ],
+
+                ("PER", "ORG"): [
+                    # "Is {subject} a member of {object}?",
+                    "Apakah {subject} adalah anggota {object}?",
+                ],
+            }
 
     @property
     def mentions_extractor(self):
@@ -77,7 +90,8 @@ class RelationsExtractor(BaseExtractor):
         object_type = object["entity_group"]
         if (subject_type, object_type) in self.relations_patterns:
             for pattern in self.relations_patterns[(subject_type, object_type)]:
-                relation = self._extract_relation_for_pattern(subject, object, pattern, context)
+                relation = self._extract_relation_for_pattern(subject, object, pattern,
+                                                              context)
                 if relation:
                     break
         return relation
@@ -98,3 +112,10 @@ class RelationsExtractor(BaseExtractor):
                 "relation": answer,
             }
         return relation
+
+
+if __name__ == '__main__':
+    pipeline = RelationsExtractor()
+    text = "Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia. Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia."
+    relations = pipeline(text)
+    print(relations)

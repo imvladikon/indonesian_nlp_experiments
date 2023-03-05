@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# TODO: Implement it, e.g. getting data from wikidata
 from extractors.base_extractor import BaseExtractor
 
 person_suffixes = [

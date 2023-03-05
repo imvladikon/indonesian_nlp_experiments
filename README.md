@@ -72,5 +72,5 @@ pipeline = RelationsExtractor()
 text = "Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia. Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia."
 relations = pipeline(text)
 print(relations)
-
+# [{'subject': {'entity_group': 'PER', 'score': 0.99897766, 'word': 'Raja Purnawarman', 'start': 0, 'end': 16}, 'object': {'entity_group': 'ORG', 'score': 0.99636495, 'word': ' Universitas', 'start': 44, 'end': 56}, 'relation': 'mahasiswa'}, {'subject': {'entity_group': 'PER', 'score': 0.99897766, 'word': 'Raja Purnawarman', 'start': 0, 'end': 16}, 'object': {'entity_group': 'ORG', 'score': 0.9853031, 'word': ' Universitas Indonesia.', 'start': 114, 'end': 137}, 'relation': 'mahasiswa'}]
 ```
