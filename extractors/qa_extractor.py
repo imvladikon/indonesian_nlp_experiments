@@ -9,7 +9,7 @@ from extractors.base_extractor import BaseExtractor
 
 class QAExtractor(BaseExtractor):
 
-    def __init__(self, model_name='muchad/idt5-qa-qg', device='cpu', **kwargs):
+    def __init__(self, model_name='bstds/id-mt5-qa', device='cpu', **kwargs):
         super().__init__(**kwargs)
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)

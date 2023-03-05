@@ -98,10 +98,3 @@ class RelationsExtractor(BaseExtractor):
                 "relation": answer,
             }
         return relation
-
-
-if __name__ == '__main__':
-    pipeline = RelationsExtractor()
-    text = "Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia. Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia."
-    relations = pipeline(text)
-    print(relations)

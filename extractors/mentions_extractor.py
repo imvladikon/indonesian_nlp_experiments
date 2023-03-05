@@ -9,7 +9,7 @@ class MentionExtractor(BaseExtractor):
 
     def __init__(
         self,
-        model_name: str = "cahya/xlm-roberta-large-indonesian-NER",
+        model_name: str = "bstds/id-roberta-ner",
         aggregation_strategy: str = "max",
         **kwargs
     ):

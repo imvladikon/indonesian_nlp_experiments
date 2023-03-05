@@ -158,10 +158,3 @@ class Pdf2TextExtractor(BaseExtractor):
             text = textract.process(input_file, method=self.backend)
             yield text.decode('utf-8')
 
-
-if __name__ == '__main__':
-    input_file = '/media/robert/BC7CA8E37CA899A2/dev/indonesian_nlp_play/data/putusan_229_pk_tun_2022_20230228214842.pdf'
-    # Halaman 3 dari 7 halaman. Putusan Nomor 229 PK/TUN/2022
-    extractor = Pdf2TextExtractor(backend='pdfplumber')
-    for page_num, text in extractor(input_file):
-        print(text)

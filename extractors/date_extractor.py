@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # based on datefinder
+# TODO: improve it. currently it's working very bad
 from extractors.base_extractor import BaseExtractor
 import copy
 import logging
