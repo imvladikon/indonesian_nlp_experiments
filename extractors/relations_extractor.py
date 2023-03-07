@@ -3,6 +3,7 @@
 from typing import Dict, Optional
 
 from extractors.base_extractor import BaseExtractor
+from extractors.extractive_qa_extractor import ExtractiveQAExtractor
 from extractors.mentions_extractor import MentionExtractor
 from extractors.qa_extractor import QAExtractor
 
@@ -56,7 +57,7 @@ class RelationsExtractor(BaseExtractor):
     @property
     def qa_extractor(self):
         if not self._qa_extractor:
-            self._qa_extractor = QAExtractor()
+            self._qa_extractor = ExtractiveQAExtractor()
         return self._qa_extractor
 
     def _extract(self, text, *args, **kwargs):
@@ -115,7 +116,39 @@ class RelationsExtractor(BaseExtractor):
 
 
 if __name__ == '__main__':
+    from pprint import pprint
+
     pipeline = RelationsExtractor()
     text = "Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia. Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia."
     relations = pipeline(text)
-    print(relations)
+    pprint(relations)
+    """
+    [{'object': {'end': 56,
+             'entity_group': 'ORG',
+             'score': 0.99636495,
+             'start': 44,
+             'word': ' Universitas'},
+  'relation': {'answer': 'Universitas Indonesia',
+               'end': 66,
+               'score': 0.27503731846809387,
+               'start': 45},
+  'subject': {'end': 16,
+              'entity_group': 'PER',
+              'score': 0.99897766,
+              'start': 0,
+              'word': 'Raja Purnawarman'}},
+ {'object': {'end': 137,
+             'entity_group': 'ORG',
+             'score': 0.9853031,
+             'start': 114,
+             'word': ' Universitas Indonesia.'},
+  'relation': {'answer': 'mahasiswa',
+               'end': 41,
+               'score': 0.34289419651031494,
+               'start': 32},
+  'subject': {'end': 16,
+              'entity_group': 'PER',
+              'score': 0.99897766,
+              'start': 0,
+              'word': 'Raja Purnawarman'}}]
+    """
