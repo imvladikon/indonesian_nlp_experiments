@@ -1,6 +1,5 @@
 datasets
 transformers
-textract
 pdfplumber
 sentencepiece
 protobuf==3.20.1

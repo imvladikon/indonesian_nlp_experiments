@@ -4,7 +4,6 @@ from pathlib import Path
 
 import PyPDF2
 import pdfplumber
-import textract
 from PyPDF4 import PdfFileReader, PdfFileWriter
 from PyPDF4.generic import NameObject, TextStringObject
 from PyPDF4.pdf import ContentStream
@@ -139,16 +138,13 @@ class Pdf2TextExtractor(BaseExtractor):
             with pdfplumber.open(input_file) as pdf:
                 for page_num, page in enumerate(pdf.pages, 1):
                     yield page_num, page.extract_text()
-        elif self.backend == 'pymupdf':
+        else:
             import fitz
 
             doc = fitz.open(input_file)
             # metadata = doc.metadata
             for page_num, page in enumerate(doc, 1):
                 yield page_num, page.get_text()
-        else:
-            text = textract.process(input_file, method=self.backend)
-            yield text.decode('utf-8')
 
     def get_num_pages(self, input_file):
         if self.backend == 'pdfplumber':
