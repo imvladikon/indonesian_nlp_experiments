@@ -9,7 +9,7 @@ class MorphSentenceTokenizer:
             import spacy_udpipe
             from spacy_udpipe import UDPipeModel
         except:
-            print("Please install spacy_udpipe first")
+            print("Please run `pip install spacy-udpipe` first")
 
         try:
             spacy_udpipe.download(lang)
@@ -17,7 +17,7 @@ class MorphSentenceTokenizer:
             self.udpipe_model = UDPipeModel(lang)
             self.mode = kwargs.get("mode", "sentence")
         except:
-            print("Please install spacy_udpipe first")
+            print("Please run `pip install spacy-udpipe` first")
 
     def __call__(self, *args, **kwargs):
         return self._tokenize(*args, **kwargs)
