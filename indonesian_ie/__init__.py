@@ -5,5 +5,6 @@ from indonesian_ie.mentions_extractor import MentionExtractor
 from indonesian_ie.relations_extractor import RelationsQAExtractor, RelationsNLIExtractor
 from indonesian_ie.regexp_extractor import RegexpRulesEntityExtractor
 from indonesian_ie.nli_reranker import CrossEncoderEntailmentReranker
+from indonesian_ie.morph_sentence_tokenizer import MorphSentenceTokenizer
 
 __version__ = "0.0.1"
