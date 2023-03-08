@@ -10,7 +10,7 @@ for https://putusan3.mahkamahagung.go.id/ :
 To avoid probable corruption of the PDF file, preprocessing steps are creating a copy of the original file
 into file with `_preprocessed` suffix.
 ```python
-from extractors.pdf2text_extractor import Pdf2TextExtractor
+from indonesian_ie.pdf2text_extractor import Pdf2TextExtractor
 
 input_file = 'putusan_229_pk_tun_2022_20230228214842.pdf'
 extractor = Pdf2TextExtractor(backend='pdfplumber')
@@ -38,7 +38,7 @@ Tags:
 Main class: [mentions_extractor.py](extractors%2Fmentions_extractor.py)
 
 ```python
-from extractors.mentions_extractor import MentionExtractor
+from indonesian_ie import MentionExtractor
 
 text = """
 Demikianlah diputuskan dalam rapat permusyawaratan Majelis Hakim
@@ -66,11 +66,15 @@ It's possible to run against raw text or against mentions extracted by `MentionE
 And it's recommended to adapt relations patterns to your use case.
 
 ```python
-from extractors.relations_extractor import RelationsExtractor
+from indonesian_ie import RelationsNLIExtractor, RelationsQAExtractor
+from pprint import pprint
 
-pipeline = RelationsExtractor()
-text = "Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia. Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia."
-relations = pipeline(text)
-print(relations)
-# [{'subject': {'entity_group': 'PER', 'score': 0.99897766, 'word': 'Raja Purnawarman', 'start': 0, 'end': 16}, 'object': {'entity_group': 'ORG', 'score': 0.99636495, 'word': ' Universitas', 'start': 44, 'end': 56}, 'relation': 'mahasiswa'}, {'subject': {'entity_group': 'PER', 'score': 0.99897766, 'word': 'Raja Purnawarman', 'start': 0, 'end': 16}, 'object': {'entity_group': 'ORG', 'score': 0.9853031, 'word': ' Universitas Indonesia.', 'start': 114, 'end': 137}, 'relation': 'mahasiswa'}]
+pipeline = RelationsQAExtractor(n_jobs=1)
+text = """Raja Purnawarman adalah seorang mahasiswa di Universitas Indonesia, facebooknya adalah raja.purnawarman, nomor teleponnya adalah 08123456789, nomor sim cardnya adalah 1234567890, nomor kartu identi
+    Saya tinggal di Jakarta. Saya adalah mahasiswa Universitas Indonesia.
+    """
+pprint(pipeline(text))
+
+pipeline = RelationsNLIExtractor(n_jobs=1)
+pprint(pipeline(text))
 ```
