@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import itertools
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, QuestionAnsweringPipeline
 
-from transformers import QuestionAnsweringPipeline, AutoModelForQuestionAnswering, AutoTokenizer
-
-from extractors.base_extractor import BaseExtractor
+from indonesian_ie.base_extractor import BaseExtractor
 
 
 class ExtractiveQAExtractor(BaseExtractor):
@@ -15,18 +13,14 @@ class ExtractiveQAExtractor(BaseExtractor):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
         self.qa_pipeline = QuestionAnsweringPipeline(
-            model=self.model,
-            tokenizer=self.tokenizer
+            model=self.model, tokenizer=self.tokenizer
         )
 
     def __call__(self, question, context, **kwargs):
         return self._extract(question, context, **kwargs)
 
     def _extract(self, question, context, **kwargs):
-        answer = self.qa_pipeline({
-            'question': question,
-            'context': context
-        })
+        answer = self.qa_pipeline({'question': question, 'context': context})
         return answer
 
 

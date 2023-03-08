@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 from typing import Dict, List
 
-from extractors.base_extractor import BaseExtractor
+from indonesian_ie.base_extractor import BaseExtractor
 
 
 class RegexpExtractor(BaseExtractor):
@@ -139,7 +139,7 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
 
     def __init__(self, **kwargs):
         patterns = {
-            "date": [
+            "DATE": [
                 r'\d{1,2}\/\d{1,2}\/\d{2,4}',
                 r'\d{4}-\d{1,2}-\d{1,2}',
                 # '(\d{1,2}[- /.](0?[1-9]|1[012]))',
@@ -155,28 +155,28 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
                 r"19\d\d01|20\d\d01|19\d\d02|20\d\d02|19\d\d03|20\d\d03|19\d\d04|20\d\d04|19\d\d05|20\d\d05|19\d\d06|20\d\d06|19\d\d07|20\d\d07|19\d\d08|20\d\d08|19\d\d09|20\d\d09|19\d\d10|20\d\d10|19\d\d11|20\d\d11|19\d\d12|20\d\d12",
                 r"19\d\d01[0123]\d|20\d\d01[0123]\d|19\d\d02[0123]\d|20\d\d02[0123]\d|19\d\d03[0123]\d|20\d\d03[0123]\d|19\d\d04[0123]\d|20\d\d04[0123]\d|19\d\d05[0123]\d|20\d\d05[0123]\d|19\d\d06[0123]\d|20\d\d06[0123]\d|19\d\d07[0123]\d|20\d\d07[0123]\d|19\d\d08[0123]\d|20\d\d08[0123]\d|19\d\d09[0123]\d|20\d\d09[0123]\d|19\d\d10[0123]\d|20\d\d10[0123]\d|19\d\d11[0123]\d|20\d\d11[0123]\d|19\d\d12[0123]\d|20\d\d12[0123]\d",
             ],
-            "phone": [
+            "PHONE": [
                 # r"\d{3}-\d{3}-\d{4}",
                 r"\+?([ -]?\d+)+|\(\d+\)([ -]\d+)",
                 r'0\d{9}', r'0\d{1,2}-\d{7}', r'0\d{1,2}-\d{3}-\d{4}',
                 r'62 \d{9}', r'62 \d{1,2}-\d{7}', r'62 \d{1,2}-\d{3}-\d{4}',
             ],
-            "email": [
+            "EMAIL": [
                 r"[a-z0-9]+@[a-z0-9]+\.[a-z]+",
                 r'[a-z][_a-z0-9-.]+@[a-z0-9-]+[a-z]+\.[^\s]{2,}',
             ],
-            "hashtag": [r"#([a-zA-Z0-9_]+)"],
-            "url": [
+            "HASHTAG": [r"#([a-zA-Z0-9_]+)"],
+            "URL": [
                 r"(http|https)://[a-zA-Z0-9./]+",
                 r"www.[a-zA-Z0-9./]+",
                 r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})',
                 r"https?:[a-zA-Z0-9_.+-/#~]+ ",
             ],
-            "passport": [
+            "PASSPORT": [
                 r"([a-zA-Z]{2})\d{8}",
                 r"([a-zA-Z]{2})\d{7}"
             ],
-            "crypto_wallet": [
+            "CRYPTOWALLET": [
                 # ETH
                 r"0x[a-fA-F0-9]{40}",
                 r"0x[a-fA-F0-9]{42}",
@@ -184,23 +184,23 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
                 # BTC
                 r"1[a-km-zA-HJ-NP-Z1-9]{25,34}",
             ],
-            "imei": [
+            "IMEI": [
                 r"\d{15}",
             ],
-            "credit_card": [
+            "CREDIT_CARD": [
                 r"\d{4} \d{4} \d{4} \d{4}",
                 r"\d{4}-\d{4}-\d{4}-\d{4}",
             ],
-            "mac_address": [
+            "MAC_ADDRESS": [
                 r"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})",
             ],
-            "geo_coordinate": [
+            "LOC": [
                 r"[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)",
             ],
-            "ip_address": [
+            "IP_ADDRESS": [
                 r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
             ],
-            "social_media": [
+            "SOCIAL_MEDIA": [
                 r"twitter.com\/[a-zA-Z0-9_]+",
                 r"facebook.com\/[a-zA-Z0-9_]+",
                 r"instagram.com\/[a-zA-Z0-9_]+",

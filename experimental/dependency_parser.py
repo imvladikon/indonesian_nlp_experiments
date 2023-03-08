@@ -2,13 +2,24 @@
 # -*- coding: utf-8 -*-
 # TODO: It's not finished yet, WIP
 import spacy_udpipe
-
+import spacy_wrap
 
 class MorphologicalAnalyzer:
 
     def __init__(self, lang="id"):
         spacy_udpipe.download(lang)
         self.nlp = spacy_udpipe.load(lang)
+        config = {
+            # "doc_extension_trf_data": "tok_clf_trf_data",
+            # "doc_extension_prediction": "token_clf_iob_tags",
+            # "labels": None,  # infer from model
+            "aggregation_strategy": "max",
+            "model": {
+                "name": "bstds/id-roberta-ner",  # model from the hub
+                "@architectures": "spacy-wrap.TokenClassificationTransformerModel.v1",
+            },
+        }
+        self.nlp.add_pipe("token_classification_transformer", config=config)
 
     def analyze(self, text):
         doc = self.nlp(text)
@@ -16,7 +27,7 @@ class MorphologicalAnalyzer:
 
     def print(self, doc):
         for token in doc:
-            print(token.text, token.lemma_, token.pos_, token.dep_)
+            print(token.text, token.lemma_, token.pos_, token.dep_, token.ent_type_)
 
     def extract_numerical(self, doc):
         return [token.text for token in doc if token.pos_ == "NUM"]
@@ -47,7 +58,7 @@ class MorphologicalAnalyzer:
 
 
 
-text = """
+text = """mail@fs.com
 tentang Peradilan Tata Usaha Negara sebagaimana telah diubah dengan
 Undang-Undang Nomor 9 Tahun 2004 dan perubahan kedua dengan
 Undang-Undang Nomor 51 Tahun 2009, serta peraturan perundang-

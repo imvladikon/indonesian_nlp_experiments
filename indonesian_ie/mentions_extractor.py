@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from transformers import AutoModelForTokenClassification, AutoTokenizer, NerPipeline
 
-from extractors.base_extractor import BaseExtractor
+from indonesian_ie.base_extractor import BaseExtractor
+from indonesian_ie.regexp_extractor import RegexpRulesEntityExtractor
 
 
 class MentionExtractor(BaseExtractor):
@@ -19,13 +20,56 @@ class MentionExtractor(BaseExtractor):
         self.pipeline = NerPipeline(
             model=model, tokenizer=tokenizer, aggregation_strategy=aggregation_strategy
         )
+        self.rule_based_extractor = RegexpRulesEntityExtractor()
 
     def _extract(self, *args, **kwargs):
+        """
+        'CRD': Cardinal
+        'DAT': Date
+        'EVT': Event
+        'FAC': Facility
+        'GPE': Geopolitical Entity
+        'LAW': Law Entity (such as Undang-Undang)
+        'LOC': Location
+        'MON': Money
+        'NOR': Political Organization
+        'ORD': Ordinal
+        'ORG': Organization
+        'PER': Person
+        'PRC': Percent
+        'PRD': Product
+        'QTY': Quantity
+        'REG': Religion
+        'TIM': Time
+        'WOA': Work of Art
+        'LAN': Language
+        """
         text = args[0]
         mentions = self.pipeline(*args, **kwargs)
+        tags_mapping = {
+            "DAT": "DATE",
+            "GPE": "LOC",
+            "NOR": "ORG",
+            "TIM": "DATE",
+        }
         # fix the word
         for mention in mentions:
             mention["word"] = text[mention["start"] : mention["end"]]
+            mention["entity_group"] = tags_mapping.get(
+                mention["entity_group"], mention["entity_group"]
+            )
+
+        rule_based_mentions = self.rule_based_extractor(*args, **kwargs)
+
+        for rule_based_mention in rule_based_mentions:
+            for mention in mentions:
+                if (
+                    rule_based_mention["start"] >= mention["start"]
+                    and rule_based_mention["end"] <= mention["end"]
+                ):
+                    break
+            else:
+                mentions.append(rule_based_mention)
         return mentions
 
 

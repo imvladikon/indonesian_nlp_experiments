@@ -10,12 +10,10 @@ from PyPDF4.generic import NameObject, TextStringObject
 from PyPDF4.pdf import ContentStream
 from PyPDF4 import utils as pdf_utils
 
-from extractors.base_extractor import BaseExtractor
+from indonesian_ie.base_extractor import BaseExtractor
 
 
 def remove_watermark(wmText, inputFile, outputFile):
-
-
     with open(inputFile, "rb") as f:
         source = PdfFileReader(f, "rb")
         output = PdfFileWriter()
@@ -116,10 +114,7 @@ def preprocess_putusan_fn(input_file, output_file):
 class Pdf2TextExtractor(BaseExtractor):
 
     def __init__(
-        self,
-        backend: str,
-        preprocess_fn: callable = preprocess_putusan_fn,
-        **kwargs
+        self, backend: str, preprocess_fn: callable = preprocess_putusan_fn, **kwargs
     ):
         super().__init__(**kwargs)
         self.backend = backend
@@ -133,10 +128,7 @@ class Pdf2TextExtractor(BaseExtractor):
             'pymupdf',
         ]
 
-    def _extract(self,
-                 input_file,
-                 *args,
-                 **kwargs):
+    def _extract(self, input_file, *args, **kwargs):
         if self.preprocess_fn:
             input_file_preprocessed = (
                 Path(input_file).parent / f'{Path(input_file).stem}_preprocessed.pdf'
@@ -158,3 +150,14 @@ class Pdf2TextExtractor(BaseExtractor):
             text = textract.process(input_file, method=self.backend)
             yield text.decode('utf-8')
 
+    def get_num_pages(self, input_file):
+        if self.backend == 'pdfplumber':
+            with pdfplumber.open(input_file) as pdf:
+                return len(pdf.pages)
+        elif self.backend == 'pymupdf':
+            import fitz
+
+            doc = fitz.open(input_file)
+            return len(doc)
+        else:
+            raise NotImplementedError

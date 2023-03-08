@@ -4,7 +4,7 @@ import itertools
 
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from extractors.base_extractor import BaseExtractor
+from indonesian_ie.base_extractor import BaseExtractor
 
 
 class QAExtractor(BaseExtractor):
