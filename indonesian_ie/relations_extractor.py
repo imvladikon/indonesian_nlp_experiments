@@ -112,6 +112,8 @@ DEFAULT_NLI_RELATION_PATTERNS = {
     },
     "per:alternate_names": {
         ("PER", "PER"): [
+            # "{subject} alias {object}."
+            "{subject} alias {object}.",
             # "{subject} is also known as {object}."
             "{subject} juga dikenal sebagai {object}.",
             # "{object} is also known as {subject}."

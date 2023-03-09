@@ -7,3 +7,5 @@ protobuf==3.20.1
 pymupdf
 PyPDF4
 PyPDF2
+spacy
+spacy-udpipe

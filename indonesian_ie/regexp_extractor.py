@@ -65,7 +65,9 @@ class RegexpExtractor(BaseExtractor):
                 entity = text[start:end]
                 if entity:
                     entities.append(
-                        {"word": entity, "entity_group": entity_type, "start": start,
+                        {"word": entity,
+                         "entity_group": entity_type,
+                         "start": start,
                          "end": end}
                     )
 
@@ -120,13 +122,15 @@ class RegexpExtractor(BaseExtractor):
         Returns:
             priority (int): Priority of entity type
         """
-        if entity_type == 'person':
+        if entity_type == 'PER':
             return 4
-        elif entity_type == 'location':
+        elif entity_type == 'LOC':
             return 3
-        elif entity_type == 'date':
+        elif entity_type in ['SOCIAL_MEDIA', 'EMAIL', 'URL', "SIMCARD"]:
+            return 3
+        elif entity_type == 'IMEI':
             return 2
-        elif entity_type == 'social_media':
+        elif entity_type == 'DATE':
             return 1
         else:
             return 0
@@ -140,6 +144,7 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
     def __init__(self, **kwargs):
         patterns = {
             "DATE": [
+                r'\d{1,2} \w+ \d{4} \d{1,2}:\d{1,2}:\d{1,2} \w{2}\(UTC\+\d\)',
                 r'\d{1,2}\/\d{1,2}\/\d{2,4}',
                 r'\d{4}-\d{1,2}-\d{1,2}',
                 # '(\d{1,2}[- /.](0?[1-9]|1[012]))',
@@ -157,7 +162,7 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
             ],
             "PHONE": [
                 # r"\d{3}-\d{3}-\d{4}",
-                r"\+?([ -]?\d+)+|\(\d+\)([ -]\d+)",
+                # r"\+?([ -]?\d+)+|\(\d+\)([ -]\d+)",
                 r'0\d{9}', r'0\d{1,2}-\d{7}', r'0\d{1,2}-\d{3}-\d{4}',
                 r'62 \d{9}', r'62 \d{1,2}-\d{7}', r'62 \d{1,2}-\d{3}-\d{4}',
             ],
@@ -186,6 +191,8 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
             ],
             "IMEI": [
                 r"\d{15}",
+                r"\d{14}",
+                r"imei \d{15}",
             ],
             "CREDIT_CARD": [
                 r"\d{4} \d{4} \d{4} \d{4}",
@@ -212,11 +219,16 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
                 r"tiktok.com\/[a-zA-Z0-9_]+",
                 r"twitch.tv\/[a-zA-Z0-9_]+",
                 r"whatsapp.com\/[a-zA-Z0-9_]+",
+                r"whatsapp.net\/[a-zA-Z0-9_]+",
+                r"[a-zA-Z0-9_]+@s.whatsapp.net",
                 r"telegram.me\/[a-zA-Z0-9_]+",
                 r"telegram.org\/[a-zA-Z0-9_]+",
                 r"telegram.com\/[a-zA-Z0-9_]+",
+            ],
+            "SIMCARD": [
+                r"sim card 0\d{2}\d{8,10}",
+                r"simcard 0\d{2}\d{8,10}"
             ]
-
         }
         super().__init__(patterns=patterns, **kwargs)
 
@@ -242,8 +254,7 @@ class RegexpRulesEntityExtractor(RegexpExtractor):
 
 if __name__ == '__main__':
     extractor = RegexpRulesEntityExtractor()
-    text = (
-        "My email is h@gmail.com and my phone number is +62 361 222777"
-        " and my hashtag is #hello and my url is https://www.google.com and my date is 2019-01-01"
-    )
+    text = "sim card 081231900021"
+
+
     print(extractor(text))
